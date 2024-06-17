@@ -1,0 +1,1 @@
+# MultipleAreas_BlazorTemplate
