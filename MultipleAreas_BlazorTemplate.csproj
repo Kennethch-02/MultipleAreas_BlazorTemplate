@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\First_Area\Components\" />
+    <Folder Include="Areas\First_Area\Models\" />
+    <Folder Include="Areas\First_Area\Pages\" />
+    <Folder Include="Areas\First_Area\Services\" />
+    <Folder Include="Areas\Second_Area\Components\" />
+    <Folder Include="Areas\Second_Area\Models\" />
+    <Folder Include="Areas\Second_Area\Pages\" />
+    <Folder Include="Areas\Second_Area\Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+</Project>

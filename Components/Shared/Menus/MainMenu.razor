@@ -1,0 +1,47 @@
+﻿@using MultipleAreas_BlazorTemplate.Services.Auth
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView>
+    <Authorized Context="authContext">
+        <ul class="nav">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/home" Match="NavLinkMatch.All">Home</NavLink>
+            </li>
+            <AuthorizeView Roles="Admin">
+                <Authorized Context="adminContext">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/config/user" Match="NavLinkMatch.All">Config</NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="User">
+                <Authorized Context="userContext">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/info/user" Match="NavLinkMatch.All">User</NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized Context="generalContext">
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/info/general" Match="NavLinkMatch.All">General</NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/auth/logout">Logout</NavLink>
+            </li>
+        </ul>
+    </Authorized>
+    <NotAuthorized Context="notAuthorizedContext">
+        <li class="nav-item">
+            <NavLink class="nav-link" href="/auth/logout">Logout</NavLink>
+        </li>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}
