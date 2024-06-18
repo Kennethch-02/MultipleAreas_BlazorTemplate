@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MultipleAreas_BlazorTemplate.Models;
+using MultipleAreas_BlazorTemplate.Services.Alert;
+using Radzen;
+using MultipleAreas_BlazorTemplate.Services.NotificationFromBD;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +25,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "auth_token";
         options.LoginPath = "/";
         options.AccessDeniedPath = "/AccessDenied";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(GlobalConfigModel.configuration.GetValue<int>("UserSessionExpires"));
         options.SlidingExpiration = true;
     });
 
@@ -44,6 +47,10 @@ builder.Services.AddAuthorization(options =>
             context.User.IsInRole("User") || context.User.IsInRole("Admin") || context.User.IsInRole("Root") || context.User.IsInRole("Dev")));
 });
 
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<AlertService>();
+builder.Services.AddScoped<NotificationFromBDService>();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IUserService, UserDataService>();

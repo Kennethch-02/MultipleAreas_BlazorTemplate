@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MultipleAreas_BlazorTemplate.Models;
-namespace MultipleAreas_BlazorTemplate.Services.Notification
+namespace MultipleAreas_BlazorTemplate.Services.NotificationFromBD
 {
-    public class NotificationService : IAsyncDisposable
+    public class NotificationFromBDService : IAsyncDisposable
     {
         public HubConnection HubConnection { get; }
         public bool IsConnected => HubConnection.State == HubConnectionState.Connected;
-        public NotificationService()
+        public NotificationFromBDService()
         {
             HubConnection = new HubConnectionBuilder()
                 .WithUrl(GlobalConfigModel.configuration?.GetValue<string>("NotificationHUB"))

@@ -16,10 +16,10 @@ namespace MultipleAreas_BlazorTemplate.Services.Auth
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> LoginAsync(UserDataModel userDataModel)
+        public async Task<UserDataModel?> LoginAsync(UserDataModel userDataModel)
         {
             userDataModel = bdLogin(userDataModel);
-            if (userDataModel == null) return false;
+            if (userDataModel.LoginFail) return userDataModel;
             string userDataJson = Newtonsoft.Json.JsonConvert.SerializeObject(userDataModel);
             try {
                 var claims = new List<Claim>
@@ -34,7 +34,7 @@ namespace MultipleAreas_BlazorTemplate.Services.Auth
                 var authProperties = new AuthenticationProperties
                 {
                     IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(GlobalConfigModel.configuration.GetValue<int>("UserSessionExpires"))
                 };
 
                 await _httpContextAccessor.HttpContext.SignInAsync(
@@ -44,15 +44,18 @@ namespace MultipleAreas_BlazorTemplate.Services.Auth
             }
             catch (System.Exception e)
             {
-                return false;
+                return null;
             }
-            return true;
+            return userDataModel;
         }
         private UserDataModel bdLogin (UserDataModel userDataModel)
         {
             // Implementar lógica de acceso a la base de datos
-            if(userDataModel.Password != "test") return null;
-            if (userDataModel.UserName == "admin")
+            if (userDataModel.Password != "test") {
+                userDataModel.ErrorInLogin = "User or password incorrect";
+                userDataModel.LoginFail = true;
+            }
+            else if (userDataModel.UserName == "admin")
             {
                 userDataModel.Role = "Admin";
             }
@@ -69,7 +72,8 @@ namespace MultipleAreas_BlazorTemplate.Services.Auth
                 userDataModel.Role = "Dev";
             }
             else {
-                return null;
+                userDataModel.ErrorInLogin = "User or password incorrect";
+                userDataModel.LoginFail = true;
             }
             return userDataModel;
         }

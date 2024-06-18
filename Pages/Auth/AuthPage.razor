@@ -1,14 +1,16 @@
 ﻿@page "/"
-
+@rendermode InteractiveWebAssembly
+@using MultipleAreas_BlazorTemplate.Services.Alert
+@inject AlertService alertService
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 @layout SimpleLayout
 
 <h3>Login</h3>
 
-@if (loginFailed)
+@if (userData.LoginFail)
 {
-    <p style="color:red;">Invalid username or password</p>
+    <p style="color:red;">@userData.ErrorInLogin</p>
 }
 <EditForm Model="@UserAuth" FormName="LoginForm" OnValidSubmit="Login">
     <InputText @bind-Value="UserAuth.UserName" />
@@ -17,26 +19,29 @@
 </EditForm>
 
 @code {
-    private bool loginFailed;
-
     [SupplyParameterFromForm]
     public UserDataModel UserAuth { get; set; } = new();
-
+    private UserDataModel userData = new();
     private async Task Login()
     {
 
         try
         {
-            loginFailed = !await AuthService.LoginAsync(UserAuth);
+            userData = await AuthService.LoginAsync(UserAuth);
         }
         catch (Exception ex)
         {
-            loginFailed = true;
+            userData.LoginFail = true;
+            userData.ErrorInLogin = ex.Message;
         }
 
-        if (!loginFailed)
+        if (!userData.LoginFail)
         {
             Navigation.NavigateTo("/home");
+        }
+        else
+        {
+            
         }
     }
 }
