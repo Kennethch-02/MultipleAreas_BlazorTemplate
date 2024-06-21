@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using MultipleAreas_BlazorTemplate.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace MultipleAreas_BlazorTemplate.Data
@@ -6,16 +7,27 @@ namespace MultipleAreas_BlazorTemplate.Data
     public class DataBaseService
     {
         private readonly IConfiguration? _configuration;
-        private readonly string? _connectionString;
+        private string? _connectionString;
 
-        public DataBaseService(IConfiguration configuration)
+        public DataBaseService()
         {
-            _configuration = configuration;
+            _configuration = GlobalConfigModel.configuration;
             _connectionString = _configuration.GetConnectionString("DefaultConnection");
         }
-
-        public DataTable ExecuteStoredProcedure(string storedProcedureName, params SqlParameter[] parameters)
+        private void setConnectionString(string key)
         {
+            try
+            {
+                _connectionString = _configuration.GetConnectionString(key);
+            }
+            catch (Exception ex) 
+            {
+                _connectionString = _configuration.GetConnectionString("DefaultConnection");
+            }
+        }
+        public DataTable ExecuteStoredProcedure(string storedProcedureName, SqlParameter[] parameters, string bdKey = null)
+        {
+            if (bdKey != null) setConnectionString(bdKey);
             using (var connection = new SqlConnection(_connectionString))
             {
                 using (var command = new SqlCommand(storedProcedureName, connection))
