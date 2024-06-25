@@ -25,7 +25,7 @@ namespace MultipleAreas_BlazorTemplate.Data
                 _connectionString = _configuration.GetConnectionString("DefaultConnection");
             }
         }
-        public DataTable ExecuteStoredProcedure(string storedProcedureName, SqlParameter[] parameters, string bdKey = null)
+        public DataTable ExecuteStoredProcedure(string storedProcedureName, List<SqlParameter> parameters, string bdKey = null)
         {
             if (bdKey != null) setConnectionString(bdKey);
             using (var connection = new SqlConnection(_connectionString))
@@ -35,7 +35,10 @@ namespace MultipleAreas_BlazorTemplate.Data
                     command.CommandType = CommandType.StoredProcedure;
                     if (parameters != null)
                     {
-                        command.Parameters.AddRange(parameters);
+                        foreach (var parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
                     }
 
                     var dataTable = new DataTable();
